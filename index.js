@@ -1,7 +1,5 @@
 // session 3 Nodejs
-
 // to check if of the rquest and respnses go to Postman and make a post/delete/get/.. request with the link of your server and the appropiate path
-
 // getting our libraries
 const express = require('express')
 const cors = require('cors')
@@ -46,23 +44,6 @@ app.get('/profiles', (req, res) => {
   })
 })
 
-// POST /profiles
-app.post('/profiles', (req, res) => {
-
-  // find the largest key and increment it
-  const existingIds = Object.keys(db.profiles)
-  const largestKey = Math.max(...existingIds)
-
-  const newKey = largestKey + 1
-
-  db.profiles[newKey] = req.body
-
-  res.json({
-    status: 'success',
-    message: `Created a profile with id of ${newKey}`
-  })
-})
-
 app.get('/profiles/:userId', (req, res) => {
   console.log(req.params.userId)
 
@@ -80,6 +61,23 @@ app.get('/profiles/:userId', (req, res) => {
   }
   
 })
+
+// POST /profiles
+app.post('/profiles', (req, res) => {
+  // find the largest key and increment it
+  const existingIds = Object.keys(db.profiles)
+  const largestKey = Math.max(...existingIds)
+  const newKey = largestKey + 1
+
+  db.profiles[newKey] = req.body
+
+  res.json({
+    status: 'success',
+    message: `Created a profile with id of ${newKey}`
+  })
+})
+
+
 // DELETE profiles
 app.delete('/profiles/1000', (res, req) => {
 
@@ -114,13 +112,13 @@ app.put('/profiles/:userId', (res, req) => {
 })
 app.patch('/profiles/:userId', (res, req) => {
 
-    const idToPatch = req.params.userId
-    // updating 
-    db.profiles[idToPatch] = {...db.profiles[idToPatch],...req.body }
+  const idToPatch = req.params.userId
+  // updating 
+  db.profiles[idToPatch] = {...db.profiles[idToPatch],...req.body }
 
-    res.json({
-        message: 'The profile has been modified (path)'
-    })
+  res.json({
+      message: 'The profile has been modified (path)'
+  })
 
 })
 
@@ -143,7 +141,7 @@ app.patch('/profiles/:userId', (res, req) => {
 //   })
 // })
 
-//C
+//C POST Books
 app.post('/books', (req,res)=>{
 
     const existingBooks = Object.keys(db.books)
@@ -159,21 +157,52 @@ app.post('/books', (req,res)=>{
     })
 })
 
-// R
+// R GET books
 app.get('/books', (req,res)=>{
     res.json({
         title: 'All the books',
         data: db.books
     })
 })
+app.get('/books/:bookId', (req,res)=>{
 
-// U
-app.put('books', (res, req) => {
+  matchedBook = db.books[req.params.bookId]
+
+  res.json({
+    status: 'success';
+    data: matchedBook
+  })
+})
+
+// U PUT/PATCH books
+app.put('books/:bookId', (res, req) => {
+  // const bookToPut = db.books[req.params.bookId];
+  const idToPut = req.params.bookId
+
+  db.books[idToPut] = req.body
+
+  res.json({
+    status: 'succcess',
+    // message: 'the book ' + bookToPut + ' has been changed to ' + req.body
+  })
 
 })
-// D
-app.delete('/books', (req, res) => {
+app.patch('/books/:bookId', (req, res) => {
+  const idToPatch = req.params.bookId
 
+  db.book[idToPatch] = {...db.book[idToPatch],...req.body }
+
+  res.json({
+      message: 'The book has been modified '
+  })
+})
+// D
+app.delete('/books:bookId', (req, res) => {
+  delete db.books[req.params.bookId]
+
+  res.json({
+    message: 'the book with has been deleted' 
+  })
 })
 
 app.listen(4000, () => {
