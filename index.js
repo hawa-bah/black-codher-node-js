@@ -169,7 +169,7 @@ app.get('/books/:bookId', (req,res)=>{
   matchedBook = db.books[req.params.bookId]
 
   res.json({
-    status: 'success';
+    status: 'success',
     data: matchedBook
   })
 })
