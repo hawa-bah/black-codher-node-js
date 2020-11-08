@@ -79,7 +79,7 @@ app.post('/profiles', (req, res) => {
 
 
 // DELETE profiles
-app.delete('/profiles/1000', (res, req) => {
+app.delete('/profiles/1000', (req, res) => {
 
     delete db.profiles[1000] 
 
@@ -88,9 +88,11 @@ app.delete('/profiles/1000', (res, req) => {
     })
 
 })
-app.delete('/profiles/:userId', (res, req) => {
+app.delete('/profiles/:userId', (req, res) => {
 
-    delete db.profiles[req.params.userId]
+    const idToDelete =[req.params.userId]
+
+    delete db.profiles[idToDelete]
 
     res.json({
         message: 'The profile has been deleted'
@@ -99,7 +101,7 @@ app.delete('/profiles/:userId', (res, req) => {
 })
 
 //PUT  
-app.put('/profiles/:userId', (res, req) => {
+app.put('/profiles/:userId', (req, res) => {
 
     const idToPut = req.params.userId
     // updating 
@@ -110,7 +112,7 @@ app.put('/profiles/:userId', (res, req) => {
     })
 
 })
-app.patch('/profiles/:userId', (res, req) => {
+app.patch('/profiles/:userId', (req, res) => {
 
   const idToPatch = req.params.userId
   // updating 
@@ -123,29 +125,21 @@ app.patch('/profiles/:userId', (res, req) => {
 })
 
 
-// app.get('/profiles/1000', (req, res) => {
-//   const matchingProfile = db.profiles[1000]
+app.get('/', (req, res) => {
+  
+  res.json({
+    status: 'success',
+    message: 'welcome to the root of the book API',
+    data: db
+  })
+})
 
-//   res.json({
-//     status: 'success',
-//     data: matchingProfile
-//   })
-// })
-
-// app.get('/profiles/1001', (req, res) => {
-//   const matchingProfile = db.profiles[1001]
-
-//   res.json({
-//     status: 'success',
-//     data: matchingProfile
-//   })
-// })
 
 //C POST Books
 app.post('/books', (req,res)=>{
 
     const existingBooks = Object.keys(db.books)
-    const largestKey = Math.max(...existingIds)
+    const largestKey = Math.max(...existingBooks)
 
     const newKey = largestKey + 1
 
@@ -168,14 +162,20 @@ app.get('/books/:bookId', (req,res)=>{
 
   matchedBook = db.books[req.params.bookId]
 
-  res.json({
-    status: 'success',
-    data: matchedBook
-  })
+  if (matchedBook) {
+    res.json({
+      status: 'success',
+      data: matchedBook
+    })
+  } else {
+    res.json({
+      message: "Couldn't find book with that id"
+    })
+  }
 })
 
 // U PUT/PATCH books
-app.put('books/:bookId', (res, req) => {
+app.put('/books/:bookId', (req, res) => {
   // const bookToPut = db.books[req.params.bookId];
   const idToPut = req.params.bookId
 
@@ -190,7 +190,7 @@ app.put('books/:bookId', (res, req) => {
 app.patch('/books/:bookId', (req, res) => {
   const idToPatch = req.params.bookId
 
-  db.book[idToPatch] = {...db.book[idToPatch],...req.body }
+  db.books[idToPatch] = {...db.books[idToPatch],...req.body}
 
   res.json({
       message: 'The book has been modified '
